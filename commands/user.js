@@ -106,7 +106,7 @@ module.exports = {
 		const actionRow = new ActionRowBuilder()
 			.addComponents(selectMenu);
 	
-		await interaction.editReply({components: [actionRow]})
+		const message = await interaction.editReply({components: [actionRow]})
 	
 		const filter = interaction => interaction.isSelectMenu() && interaction.customId === 'pageSelector';
 		const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -124,5 +124,6 @@ module.exports = {
 		  if (collected.size === 0) {
 			await interaction.editReply({ content: 'No options were selected', components: [] });
 		  }
+		  await message.delete()
 		});	}
 }
