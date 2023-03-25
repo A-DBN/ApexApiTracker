@@ -3,5 +3,5 @@
     "append": false,
     "watch": true,
     "script": "main.js",
-    "sourceDir": "/home/pi/ApexApiTracker"
+    "sourceDir": ""
 }
