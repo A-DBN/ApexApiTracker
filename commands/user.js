@@ -106,24 +106,29 @@ module.exports = {
 		const actionRow = new ActionRowBuilder()
 			.addComponents(selectMenu);
 	
-		const message = await interaction.editReply({components: [actionRow]})
+		try {
+			const message = await interaction.editReply({components: [actionRow]})
 	
-		const filter = interaction => interaction.isSelectMenu() && interaction.customId === 'pageSelector';
-		const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
-		collector.on('collect', async interaction => {
-		  const value = interaction.values[0];
-		  if (value !== 'Overall Stats' && value !== 'Ranked Stats' && value !== 'Realtime Information') {
-			pages.push(get_champion(value, user.data.legends.all[value]))
-		  }
-		  const select = pages.find(page => page.data.title === value);
-		  await interaction.update({ embeds: [select], components: [actionRow] });
-		  selectMenu.setPlaceholder(value);
-		});
-	
-		collector.on('end', async collected => {
-		  if (collected.size === 0) {
-			await interaction.editReply({ content: 'No options were selected', components: [] });
-		  }
-		  await message.delete()
-		});	}
+			const filter = interaction => interaction.isSelectMenu() && interaction.customId === 'pageSelector';
+			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
+			collector.on('collect', async interaction => {
+			const value = interaction.values[0];
+			if (value !== 'Overall Stats' && value !== 'Ranked Stats' && value !== 'Realtime Information') {
+				pages.push(get_champion(value, user.data.legends.all[value]))
+			}
+			const select = pages.find(page => page.data.title === value);
+			await interaction.update({ embeds: [select], components: [actionRow] });
+			selectMenu.setPlaceholder(value);
+			});
+		
+			collector.on('end', async collected => {
+			if (collected.size === 0) {
+				await interaction.editReply({ content: 'No options were selected', components: [] });
+			}
+			await message.delete()
+			});	
+		} catch (error) {
+			await interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
+		}
+	}
 }
