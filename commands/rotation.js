@@ -67,10 +67,15 @@ module.exports = {
         .setTimestamp()
         .setThumbnail(current.asset + "/" + current.map + '.png');
 
+        try {
         if (current_map === 'ltm') {
             interaction.reply({ embeds: [ltm_embed] });
           } else {
             const message = await interaction.reply({ embeds: [embed] });
             setTimeout(() => message.delete(), 60 * 1000); // Delete the message after 1 minute (60 seconds * 1000 ms)
-          }	}
+          }	
+        } catch (error) {
+            interaction.reply({ content: 'There was an error while executing this command! Try again later', ephemeral: true });
+        }
+    }
 };
